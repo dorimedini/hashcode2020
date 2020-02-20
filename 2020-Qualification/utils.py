@@ -64,7 +64,6 @@ def print_output(library_order, book_order_per_library, num_of_books_for_shipmen
         for library, num_of_scanned_books, books_to_scan in zip(library_order, num_of_scanned_books_per_library,
                                                                 book_order_per_library):
             f.write(str(library) + " " + str(num_of_scanned_books) + '\n')
-            # f.write(' '.join([str(b) for b in books_to_scan]) + '\n')
             print(books_to_scan)
             print("*"*30, str(books_to_scan)[1:-1])
             f.write(str(books_to_scan)[1:-1] + '\n')
@@ -83,3 +82,24 @@ def parse_file(filename):
 
     return (days, books_num, libraries_num, books_scores, num_of_books_in_library, signup_time_for_library,
             books_per_day_from_lib, book_ids_for_library)
+
+
+def initial_library_scores(dataset):
+    '''gets a dataset and computes the initial score per library'''
+    signup_time = dataset['signup_time_for_library']
+    total_time = dataset['D']
+    num_books = dataset['books_in_library']
+    books_per_day = dataset['books_per_day_from_lib']
+    books_in_libraries = dataset['book_ids_for_library']
+    scores = []
+    for library in range(dataset['L']):
+        books_scores = np.sort(np.array([(dataset['scores'][bID], bID) for bID in books_in_libraries[library]]))
+        if signup_time[library]>total_time:
+            scores.append((-1,[]))
+        else:
+            if (total_time-signup_time[library])*books_per_day[library]<num_books[library]:
+                books_score =books_score[:(total_time-signup_time[library])*books_per_day[library]]
+            score = np.sum([score for (score, book) in books_scores]) / books_per_day[library]
+            books = [book for (score, book) in books_scores]
+            scores.append((score, books))
+    return scores
