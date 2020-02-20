@@ -68,15 +68,17 @@ books per day between 1 and 2, avg is 1.494 var is 0.4999639987039066
 scores in library between 227 and 129651, avg is 61690.074 var is 36069.812571602364
 Books missing from all libraries: 736
 libraries containing a specific book: between 1 and 18, avg is 4.955895390070922 var is 2.180343502271195
-Histogram of books-per-library: (array([ 97, 115,  92, 104, 103, 103, 110,  87,  99,  90], dtype=int32), array([   2. ,  101.8,  201.6,  301.4,  401.2,  501. ,  600.8,  700.6,
-        800.4,  900.2, 1000. ]))
+Histogram of books-per-library: (array([ 97, 115,  92, 104, 103, 103, 110,  87,  99,  90], dtype=int32), 
+        array([   2. ,  101.8,  201.6,  301.4,  401.2,  501. ,  600.8,  700.6,  800.4,  900.2, 1000. ]))
         
 This seems hard.
 Human-eye analysis: can't see any patterns other than the above stats.
 Huge difference in both library scores and book scores.
 However, we can afford D^3 runtime (even D^4) where D is the number of days.
-The number of libraries is pretty low as well.
+The number of libraries is pretty low as well, and we can only choose 200 of them in the end.
 How do we use this to our advantage?
+
+Since time is a bottlneck here, maybe divide a libraries' score by signup_days**2 instead of just signup_days?
 """
 
 
@@ -91,14 +93,15 @@ books per day between 5 and 10, avg is 7.467 var is 1.6955562509100075
 scores in library between 164 and 412714, avg is 204421.248 var is 116574.11414030346
 Books missing from all libraries: 575
 libraries containing a specific book: between 1 and 17, avg is 5.122876540105607 var is 2.2257636464824415
-Histogram of books-per-library: (array([ 93, 101,  84, 109, 107, 110,  84,  87, 124, 101], dtype=int32), array([   1. ,  100.9,  200.8,  300.7,  400.6,  500.5,  600.4,  700.3,
-        800.2,  900.1, 1000. ]))
+Histogram of books-per-library: (array([ 93, 101,  84, 109, 107, 110,  84,  87, 124, 101], dtype=int32),
+        array([   1. ,  100.9,  200.8,  300.7,  400.6,  500.5,  600.4,  700.3,  800.2,  900.1, 1000. ]))
 
 Interesting:
-Min signup-time of a library is 30 days and we only have 700 days, so at
-most 700//30=23 libraries can be chosen.
-So:
-This is just a question of finding the top 23 libraries to sign up!
+Min signup-time of a library is 30 days and we only have 700 days, so at most 700//30=23 libraries can be chosen.
+So: this is a question of finding the top ~20 libraries to sign up.
+Also:
+Note that for libraries with a 10-book-per-day rate, we need an average of 50 days to push out all the books in the
+library.  
 (Brute-forcing this is approximately 1000^23, the technical term for which is "bad")
 """
 
