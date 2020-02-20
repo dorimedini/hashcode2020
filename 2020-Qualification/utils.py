@@ -43,11 +43,18 @@ def get_number_of_libraries_to_sign_up(libraries_sort, days, signup_time_for_lib
 
 
 def get_num_of_scanned_books_per_library(num_of_books_for_shipment_per_library, books_per_day_from_lib,
-                                         libraries_end_date, days):
+                                         libraries_end_date, days, book_order_per_library=None):
     # TODO add number of actual books
     number_days_left_per_library = np.maximum(np.full(libraries_end_date.shape, days) - libraries_end_date, 0)
-    number_of_books_sent_for_library = np.minimum(number_days_left_per_library * books_per_day_from_lib,
-                                                  num_of_books_for_shipment_per_library)
+    number_of_books_sent_for_library = np.minimum(
+        np.multiply(number_days_left_per_library, books_per_day_from_lib, dtype=np.int64),
+        num_of_books_for_shipment_per_library)
+    if book_order_per_library is not None:
+        actual_books_sent = [len(s) for s in book_order_per_library]
+        number_of_books_sent_for_library = np.minimum(
+            number_of_books_sent_for_library,
+            actual_books_sent)
+    print(number_of_books_sent_for_library)
     return number_of_books_sent_for_library
 
 
@@ -57,7 +64,8 @@ def print_output(library_order, book_order_per_library, num_of_books_for_shipmen
     with open(output_file, "w") as f:
         num_of_scanned_books_per_library = get_num_of_scanned_books_per_library(num_of_books_for_shipment_per_library,
                                                                                 books_per_day_from_lib,
-                                                                                libraries_end_date, days)
+                                                                                libraries_end_date, days,
+                                                                                book_order_per_library)
         num_of_libraries = get_number_of_libraries_to_sign_up(library_order, days, signup_time_for_library)
 
         f.write(str(num_of_libraries) + '\n')
@@ -66,6 +74,7 @@ def print_output(library_order, book_order_per_library, num_of_books_for_shipmen
             if num_of_scanned_books > 0:
                 f.write(str(library) + " " + str(num_of_scanned_books) + '\n')
                 f.write(' '.join([str(b) for b in books_to_scan[:num_of_scanned_books]]) + '\n')
+
 
 def parse_file(filename):
     res = input_parser.parse(filename)
@@ -93,11 +102,11 @@ def initial_library_scores(dataset):
     scores = []
     for library in range(dataset['L']):
         books_scores = np.sort(np.array([(dataset['scores'][bID], bID) for bID in books_in_libraries[library]]))
-        if signup_time[library]>total_time:
-            scores.append((-1,[]))
+        if signup_time[library] > total_time:
+            scores.append((-1, []))
         else:
-            if (total_time-signup_time[library])*books_per_day[library]<num_books[library]:
-                books_score =books_score[:(total_time-signup_time[library])*books_per_day[library]]
+            if (total_time - signup_time[library]) * books_per_day[library] < num_books[library]:
+                books_score = books_score[:(total_time - signup_time[library]) * books_per_day[library]]
             score = np.sum([score for (score, book) in books_scores]) / books_per_day[library]
             books = [book for (score, book) in books_scores]
             scores.append((score, books))
