@@ -63,10 +63,9 @@ def print_output(library_order, book_order_per_library, num_of_books_for_shipmen
         f.write(str(num_of_libraries) + '\n')
         for library, num_of_scanned_books, books_to_scan in zip(library_order, num_of_scanned_books_per_library,
                                                                 book_order_per_library):
-            f.write(str(library) + " " + str(num_of_scanned_books) + '\n')
-            print(books_to_scan)
-            print("*"*30, str(books_to_scan)[1:-1])
-            f.write(str(books_to_scan)[1:-1] + '\n')
+            if num_of_scanned_books > 0:
+                f.write(str(library) + " " + str(num_of_scanned_books) + '\n')
+                f.write(' '.join([str(b) for b in books_to_scan[:num_of_scanned_books]]) + '\n')
 
 def parse_file(filename):
     res = input_parser.parse(filename)
