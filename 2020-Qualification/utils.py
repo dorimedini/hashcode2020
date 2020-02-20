@@ -9,6 +9,14 @@ def total_library_scores(dataset):
     return r
 
 
+def missing_books(dataset):
+    counter = 0
+    for book in range(dataset['B']):
+        if book not in dataset['books_to_libraries_containing']:
+            counter += 1
+    return counter
+
+
 def initial_library_scores(dataset):
     '''gets a dataset and computes the initial score per library'''
     signup_time = dataset['signup_time_for_library']

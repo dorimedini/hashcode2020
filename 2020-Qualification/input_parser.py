@@ -14,7 +14,8 @@ def parse(filename):
         'books_in_library': [],
         'signup_time_for_library': [],
         'books_per_day_from_lib': [],
-        'book_ids_for_library': []
+        'book_ids_for_library': [],
+        'books_to_libraries_containing': {}
     }
     with open(filename, 'r') as file:
         result['B'], result['L'], result['D'] = line_to_int_tuple(file.readline())
@@ -24,5 +25,10 @@ def parse(filename):
             result['books_in_library'].append(Nj)
             result['signup_time_for_library'].append(Tj)
             result['books_per_day_from_lib'].append(Mj)
-            result['book_ids_for_library'].append(list(line_to_int_tuple(file.readline())))
+            books_in_lib = list(line_to_int_tuple(file.readline()))
+            result['book_ids_for_library'].append(books_in_lib)
+            for book in books_in_lib:
+                if book not in result['books_to_libraries_containing']:
+                    result['books_to_libraries_containing'][book] = []
+                result['books_to_libraries_containing'][book].append(libID)
         return result
