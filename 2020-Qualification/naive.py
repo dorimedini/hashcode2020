@@ -61,7 +61,7 @@ def get_num_of_scanned_books_per_library(num_of_books_for_shipment_per_library, 
     # TODO add number of actual books
     number_days_left_per_library = np.maximum(np.full(libraries_end_date.shape, days) - libraries_end_date , 0)
     number_of_books_sent_for_library = np.minimum(number_days_left_per_library * books_per_day_from_lib, num_of_books_for_shipment_per_library)
-    return number_of_books_for_library
+    return number_of_books_sent_for_library
 
 
 def
