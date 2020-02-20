@@ -1,4 +1,5 @@
 import numpy as np
+import input_parser
 
 
 def total_library_scores(dataset):
@@ -62,8 +63,24 @@ def print_output(library_order, book_order_per_library, num_of_books_for_shipmen
         f.write(str(num_of_libraries) + '\n')
         for library, num_of_scanned_books, books_to_scan in zip(library_order, num_of_scanned_books_per_library,
                                                                 book_order_per_library):
-            f.write(str(library) + " " + str(num_of_scanned_books) + '\n')
-            f.write(' '.join([str(b) for b in books_to_scan]) + '\n')
+            if num_of_scanned_books > 0:
+                f.write(str(library) + " " + str(num_of_scanned_books) + '\n')
+                f.write(' '.join([str(b) for b in books_to_scan[:num_of_scanned_books]]) + '\n')
+
+def parse_file(filename):
+    res = input_parser.parse(filename)
+    days = int(res['D'])
+    books_num = int(res['B'])
+    libraries_num = int(res['L'])
+    books_scores = np.asarray(res['scores'])
+
+    num_of_books_in_library = np.asarray(res['books_in_library'])
+    signup_time_for_library = np.asarray(res['signup_time_for_library'])
+    books_per_day_from_lib = np.asarray(res['books_per_day_from_lib'])
+    book_ids_for_library = np.asarray(res['book_ids_for_library'])
+
+    return (days, books_num, libraries_num, books_scores, num_of_books_in_library, signup_time_for_library,
+            books_per_day_from_lib, book_ids_for_library)
 
 
 def initial_library_scores(dataset):
