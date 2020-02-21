@@ -103,9 +103,9 @@ def initial_library_scores(dataset):
     for library in range(dataset['L']):
         books_scores = np.sort(np.array([(dataset['scores'][bID], bID) for bID in books_in_libraries[library]]))
         if signup_time[library] > total_time:
-            scores.append((-1, []))
+            scores.append((0, []))
         else:
-            if (total_time-signup_time[library])*books_per_day[library]<num_books[library]:
+            if (total_time-signup_time[library])<num_books[library]/books_per_day[library]:
                 books_score =books_score[:(total_time-signup_time[library])*books_per_day[library]]
             score = np.sum([score for (score, book) in books_scores]) / signup_time[library]    
             books = [book for (score, book) in books_scores]
@@ -117,19 +117,22 @@ def update_scores(scores, dataset, num_remaining_days, library):
     books_uploaded = scores[library][1]
     books_with_libraries = dataset['books_to_libraries_containing']
     for book in books_uploaded:
-        book_score = dataset['scores'][book]
         libraries = books_with_libraries[book]
         for book_library in libraries:
             signup_time = dataset['signup_time_for_library'][book_library]
             books_per_day = dataset['books_per_day_from_lib'][book_library]
             if signup_time > num_remaining_days:
-                scores[book_library] = (-1, [])
+                scores[book_library] = (0, [])
             else:
-                score_to_remove = book_score
-                books = scores[book_library][1].remove[book]
-                if (num_remaining_days - signup_time) * books_per_day < len(books):
+                score_to_remove = 0
+                for remove_book in books_uploaded:
+                    if remove_book in scores[book_library][1]:
+                        score_to_remove+= dataset['scores'][remove_book]
+                        scores[book_library][1].remove(remove_book)
+                books = scores[book_library][1]
+                if (num_remaining_days - signup_time) < len(books)/books_per_day:
                     books_to_remove = books[(num_remaining_days - signup_time[library]) * books_per_day:]
                     books = scores[book_library][1][:(num_remaining_days - signup_time[library]) * books_per_day]
                     score_to_remove += np.sum([dataset['scores'][bID] for bID in books_to_remove])
                 scores[book_library] = (scores[book_library][0] - score_to_remove/signup_time, books)
-    scores[library] = (-1, [])
+    scores[library] = (0, [])
