@@ -2,7 +2,9 @@ import numpy as np
 import input_parser
 import utils
 import solve_c
-#
+import solve_b
+import solve_d
+
 # res = input_parser.parse("./inputs/b_read_on.txt")
 # days = int(res['D'])
 # books_num = int(res['B'])
@@ -26,7 +28,7 @@ import solve_c
 
 
 (libraries_sort, books_sort, num_of_books_in_library, books_per_day_from_lib,
- days, signup_time_for_library) = solve_b.solve_b()
+ days, signup_time_for_library) = solve_d.solve_d()#solve_c.solve_c()
 # libraries_sort = np.argsort(library_time_score)[::-1]
 libraries_end_date = utils.get_libraries_signup_end_date(libraries_sort, signup_time_for_library)
 
@@ -36,4 +38,4 @@ libraries_end_date = utils.get_libraries_signup_end_date(libraries_sort, signup_
 
 # def score_per_library():
 utils.print_output(libraries_sort, books_sort, num_of_books_in_library, books_per_day_from_lib,
-                   libraries_end_date, days, 'out.txt', signup_time_for_library)
+                   libraries_end_date, days, 'out_d.txt', signup_time_for_library)

@@ -53,6 +53,9 @@ The variance on the number of books per library is low.
 Seems like books are pretty evenly spread-out so I wouldn't expect a huge saving
 in computing how libraries' score should go down due to previous selection of the
 books already inside.
+
+I would say:
+Sort in descending order of books-per-library and do greedy.
 """
 
 
@@ -132,12 +135,9 @@ def analyze(dataset):
     print(f"Histogram of books-per-library: {np.histogram([len(ids) for ids in dataset['book_ids_for_library']])}")
 
 
-b = parse('inputs/b_read_on.txt')
-print(b['books_per_day_from_lib'])
-print(b['signup_time_for_library'])
-print(set(b['scores']))
-
-print()
+print("B")
+analyze(parse('inputs/b_read_on.txt'))
+print("C")
 analyze(parse('inputs/c_incunabula.txt'))
 print()
 analyze(parse('inputs/d_tough_choices.txt'))
@@ -145,6 +145,3 @@ print()
 analyze(parse('inputs/e_so_many_books.txt'))
 print()
 analyze(parse('inputs/f_libraries_of_the_world.txt'))
-
-# ds_c = parse('inputs/c_incunabula.txt')
-# print(f"library 1470: {ds_c['books_in_library'][1470]}")
