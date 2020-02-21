@@ -123,4 +123,4 @@ def update_scores(scores, dataset, num_remaining_days, library):
                     books = scores[book_library][1][:(num_remaining_days - signup_time[library]) * books_per_day]
                     score_to_remove += np.sum([dataset['scores'][bID] for bID in books_to_remove])
                 scores[book_library] = (scores[book_library][0] - score_to_remove/signup_time, books)
-    scores[library] = (-1,[])
+    scores[library] = (-1, [])

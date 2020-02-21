@@ -145,3 +145,6 @@ print()
 analyze(parse('inputs/e_so_many_books.txt'))
 print()
 analyze(parse('inputs/f_libraries_of_the_world.txt'))
+
+# ds_c = parse('inputs/c_incunabula.txt')
+# print(f"library 1470: {ds_c['books_in_library'][1470]}")
